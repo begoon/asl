@@ -1751,6 +1751,7 @@ END
         static void ExpandINCLUDE(Boolean SearchPath)
 BEGIN
    PInputTag Tag;
+   char quote = 0;
 
    if (NOT IfAsm) return;
 
@@ -1759,8 +1760,13 @@ BEGIN
      WrError(1110); return;
     END
 
-   strmaxcpy(ArgPart, (*ArgStr[1] == '"') ? (ArgStr[1] + 1) : ArgStr[1], 255);
-   if ((*ArgPart) && (ArgPart[strlen(ArgPart)-1]=='"'))
+    if ( *ArgStr[1] == '"' || *ArgStr[1] == '\'')
+     BEGIN
+      quote = *ArgStr[1];
+     END
+
+   strmaxcpy(ArgPart, (quote) ? (ArgStr[1] + 1) : ArgStr[1], 255);
+   if ((*ArgPart) && (quote) && (ArgPart[strlen(ArgPart)-1]==quote))
      ArgPart[strlen(ArgPart)-1]='\0';
    AddSuffix(ArgPart,IncSuffix); strmaxcpy(ArgStr[1],ArgPart,255);
    if (SearchPath)
